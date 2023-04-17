@@ -1,0 +1,24 @@
+name: 🔬 Trigger end-to-end tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      suite:
+        type: choice
+        description: test suite
+        options:
+        - workflow-a-tests
+        - workflow-b-tests
+
+jobs:
+  a-tests:
+    name: ⬣ Dispatch workflow-a-tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.PAT }}
+          repository: tiotto/cypress-gh-actions-dispatch-workflow
+          event-type: ${{ github.event.inputs.suite }}
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
